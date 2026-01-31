@@ -1,12 +1,16 @@
 # Этап build
 FROM python:3.12-slim AS builder
 WORKDIR /app
+RUN python -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+RUN --mount=type=cache,target=~/.cache/pip pip install uvicorn mysql-connector-python fastapi
 COPY . .
 
 # Этап копирования результатов build И запуск
-FROM python:3.12-slim
+FROM python:3.12-slim AS worker
 WORKDIR /app
-RUN pip install uvicorn mysql-connector-python fastapi
+COPY --from=builder /app/venv ./venv
 COPY --from=builder /app/main.py /app/main.py
 EXPOSE 5000
+ENV PATH="/app/venv/bin:$PATH"
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
