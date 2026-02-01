@@ -3,7 +3,7 @@
 ssh -t -p 22 \
 -o StrictHostKeyChecking=accept-new \
 -i ~/.ssh/id_lab15_5_fops39_ed25519 \
-skv@158.160.141.162 \
+skv@158.160.146.83 \
 "cd /opt/shvirtd-example-python && docker ps -a \
 && docker exec \
 -i mysql-db \

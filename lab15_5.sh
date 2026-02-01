@@ -29,13 +29,13 @@ containerd.io \
 docker-buildx-plugin \
 docker-compose-plugin
 
+echo -e "\nсостояние запуска docker:"
+sudo systemctl is-active docker
+
 # Добавление пользователя в группу docker
 sudo usermod -aG \
 docker \
-$USER
-
-echo -e "\nсостояние запуска docker:"
-sudo systemctl is-active docker
+skv
 
 # Клонирование репозитория
 if [ -d "$TARGET_DIR" ]; then
@@ -68,7 +68,13 @@ if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
     exit 1
 fi
 
-echo -e "\nФайл compose.yaml найден."
+echo -e \
+"\nФайл compose.yaml найден."
+
+# Добавление пользователя в группу docker
+sudo usermod -aG \
+docker \
+skv
 
 # Запуск docker docker compose 
 echo -e "n\Переходим в каталог $TARGET_DIR и запускаем $DOCKER_COMPOSE_FILE..."
