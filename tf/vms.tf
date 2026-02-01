@@ -49,8 +49,8 @@ resource "local_file" "hosts_docker" {
     rsync -vP -e "ssh \
     -o StrictHostKeyChecking=accept-new \
     -i ~/.ssh/id_lab15_5_fops39_ed25519" \
-    lab15_5.sh
-    skv@${yandex_compute_instance.docker-host.network_interface.0.nat_ip_address}:~/ \
+    lab15_5.sh \
+    skv@${yandex_compute_instance.docker-host.network_interface.0.nat_ip_address}:~/
 
     # Запуск скрипта выполнения работы
     ssh -t -p 22 \
@@ -59,11 +59,14 @@ resource "local_file" "hosts_docker" {
     skv@${yandex_compute_instance.docker-host.network_interface.0.nat_ip_address} \
     "chmod +x lab15_5.sh \
     && bash -c "./lab15_5.sh""
+
+    # Запуск скрипта выполнения работ удаленного контекста
+    ./rem_context_checker.sh
 EOT
   filename = "../hosts_docker.sh"
 }
 
-# Файл hosts для проброса скрипта запуска проекта
+# Файл скрипта удаленного контекста
 resource "local_file" "_checker" {
   content  = <<-EOT
     #!/bin/bash
@@ -72,12 +75,16 @@ resource "local_file" "_checker" {
     -o StrictHostKeyChecking=accept-new \
     -i ~/.ssh/id_lab15_5_fops39_ed25519 \
     skv@${yandex_compute_instance.docker-host.network_interface.0.nat_ip_address} \
-    "bash -c "cd /opt/shvirtd-example-python && docker ps -a \
-    && docker exec -ti \
-    mysql-db \
+    "cd /opt/shvirtd-example-python && docker ps -a \
+    && docker exec \
+    -i mysql-db \
     mysql -uroot \
-    -p$(grep "ROOT_PASSWORD" .env \
-        | cut -d '"' -f 2)""
+    -p"$(grep ROOT_PASSWORD .env \
+        | cut -d '"' -f 2)" <<'EOF_SQL'
+        show databases;
+        use virtd;
+        show tables;
+        SELECT * from requests LIMIT 60;"
 EOT
   filename = "../rem_context_checker.sh"
 }

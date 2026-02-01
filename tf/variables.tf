@@ -16,8 +16,8 @@ variable "folder_id" {
 variable "host" {
   type = map(number)
   default = {
-    cores         = 2
-    memory        = 3
+    cores         = 4
+    memory        = 4
     core_fraction = 5
   }
 }

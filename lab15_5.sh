@@ -22,7 +22,7 @@ EOF
 sudo apt update
 
 # Установка docker и и плагинов
-sudo apt install \
+sudo apt install -y \
 docker-ce \
 docker-ce-cli \
 containerd.io \

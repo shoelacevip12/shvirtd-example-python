@@ -4,8 +4,8 @@ x-deploy: &deploy-skv
   deploy:
     resources:
       limits:
-        cpus: "0.7"
-        memory: 256M
+        cpus: "1"
+        memory: 1024M
       reservations:
         cpus: "0.25"
         memory: 128M
@@ -13,7 +13,7 @@ x-deploy: &deploy-skv
 x-restart: &restart
   restart: unless-stopped
 # override других compose файлов
-include: 
+include:
   -  proxy.yaml
 # Основной конфиг запуска служб
 services:
